@@ -1,20 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./index.css";
+import "./styles.css";
+import Switch from "react-switch";
+import { BsSunFill, BsFillMoonStarsFill } from 'react-icons/bs';
+import TaskContainer from './Components/TaskContainer';
 
 function App() {
 
-  const [task, setTask ] = useState();
-  const [dark, setDark ] = useState(true);
+  const [tasks, setTasks] = useState([])
+  const [dark, setDark] = useState(true);
+  
+  useEffect(() => {
+    let myTodo = localStorage.getItem('myTodoTasks');
+    if (myTodo) {
+        setTasks(JSON.parse(myTodo))
+    }
+}, [])
 
   return (
-    <div >
-      <div>
-      <input type="text" name="task" id="task" className="block w-full items-center rounded-md border-1 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6" placeholder="Add new task" />
+    <div className={`${dark ? 'darkMode-App' : "lightMode-App"} App`}>
+      <div className={`${dark ? 'darkMode-app-title-container' : "lightMode-app-title-container"} app-title-container`}>
+        <h1 className='app-title'>Todo App</h1>
       </div>
-      <h1>Todo</h1>
-      
-    </div>
-  )
+      <Switch
+        checked={dark}
+        onChange={() => setDark(!dark)}
+        uncheckedIcon={<div className='check-sun-btn' ><BsSunFill size={18} /></div>}
+        checkedIcon={<div className='check-moon-btn'><BsFillMoonStarsFill size={18} /></div>} />
+
+      <TaskContainer tasks={tasks} setTasks={setTasks} dark={dark} />
+    </div >
+  );
 }
 
-export default App
+export default App;
